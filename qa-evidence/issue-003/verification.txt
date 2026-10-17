@@ -1,0 +1,19 @@
+Issue 003: QA simulation-distance correction
+Status: technically verified and accepted by project owner; included in the Issue 003 backup checkpoint.
+Date: 2026-10-17
+QA source setting before: forge-port/run/options.txt = simulationDistance:2 (invalid in Minecraft 1.20.1, range 5..33)
+QA source setting after: forge-port/run/options.txt = simulationDistance:5 (minimum valid)
+Versioned reproducible helper: forge-port/scripts/configure_client_qa_options.py
+
+Static test results:
+- Five pure-function QA checks passed: invalid value correction, idempotence, CRLF preservation, missing and duplicate setting detection
+- python3 forge-port/scripts/configure_client_qa_options.py --check: QA simulation distance OK: expected 5
+
+Real client test (Xvfb/Mesa; ./gradlew runClient -PqaQuickPlayWorld="Nex Disposable QA"):
+[ISSUE 003] integrated world joined after 75 seconds
+[17Oct2026 18:29:27.996] [Server thread/INFO] [net.minecraft.client.server.IntegratedServer/]: Changing simulation distance to 5, from 0
+[ISSUE 003] PASS: integrated server accepted simulationDistance 5
+[ISSUE 003] PASS: no simulation-distance parsing error
+Minecraft player joined the disposable world. No new GameTests were run for this environment-only change. Last full regression suite: 35/35 on Issue 002.
+
+Local logs: forge-port/run/qa-issue003-status.log; forge-port/run/logs/latest.log. The ignored Minecraft options and world save are not uploaded to GitHub.

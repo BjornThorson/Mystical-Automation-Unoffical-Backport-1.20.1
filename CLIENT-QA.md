@@ -1,3 +1,23 @@
+## Issue 003: Disposable client QA simulation distance (17 October 2026) - ACCEPTED
+
+Scope: Correct the *development-only* Minecraft 1.20.1 Forge client configuration. No mod Java, recipe, block, menu, network, saved-world or gameplay logic changed.
+
+Cause and fix:
+- The existing ignored `forge-port/run/options.txt` contained `simulationDistance:2`. Minecraft 1.20.1 rejected this value (valid range 5..33), so the integrated server had previously used distance 12.
+- The disposable QA profile now uses `simulationDistance:5`, the lowest supported setting. Existing `renderDistance:2` and `maxFps:30` remain unchanged.
+- Added explicit, tracked helper `forge-port/scripts/configure_client_qa_options.py` to reproduce the correction without tracking or distributing the local Minecraft `run/options.txt`. It only changes that file's single simulationDistance line; `--check` validates without changing it.
+- After a fresh first launch creates `run/options.txt`, run from the project root: `python3 forge-port/scripts/configure_client_qa_options.py`. Before subsequent QA launches, use `python3 forge-port/scripts/configure_client_qa_options.py --check`.
+
+Verification:
+- Pure Python checks exercised old invalid values, idempotence, CRLF preservation, missing and duplicated settings.
+- A real Forge software-rendered client was launched with `-PqaQuickPlayWorld="Nex Disposable QA"`, joined the disposable world, and logged `Changing simulation distance to 5, from 0`. No simulation-distance options parsing error was present in this run.
+- Local proof: `qa-evidence/issue-003/verification.txt`. The detailed ignored client log is `forge-port/run/qa-issue003-client.log` with runtime Minecraft events in `forge-port/run/logs/latest.log`.
+
+Audit boundaries: The script is opt-in; normal `runClient` invocation and other Minecraft instances are untouched. The unrelated Infuser UI and the seven-machine parity roadmap remain unchanged. No new Java GameTest run was required for this isolated QA configuration correction; the verified 35/35 Minecraft GameTest checkpoint from Issue 002 remains the latest full regression result.
+Status: accepted by project owner after real-client verification and audit. Development JAR remains unsafe for Steph's existing world.
+
+---
+
 ## Issue 002: Infuser GUI label alignment (17 October 2026) - ACCEPTED
 
 Scope: Adjust text placement only in Forge `InfuserScreen.java`, retaining the original 217x194 upstream texture, menus, inventory positions, output slot, machine logic and controls.
