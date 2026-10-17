@@ -1,0 +1,21 @@
+Issue 004: Real-client Infuser selection-arrow verification
+Status: technical result verified and accepted by project owner; archived in Issue 004 checkpoint
+Date: 2026-10-17
+Environment: Minecraft 1.20.1, Forge 47.4.24, disposable singleplayer QA world, Xvfb/Mesa
+QA setting: simulationDistance:5 (Issue 003)
+Viewport: 1280x720 virtual screen, Minecraft window X=213 Y=120 width=854 height=480
+Mouse: right-click machine after commands /execute at @s run setblock ~ ~1 ~3 mysticalautomation:infuser and /tp @s ~ ~ ~ 0 0
+Tier transitions visible in captured screenshots:
+  before = Supremium (4)
+  right = Insanium (5)
+  left = Supremium (4)
+Mouse targets (desktop pixels) right arrow ~814,344; left arrow ~654,344.
+Server-authoritative path: InfuserScreen.changeTier -> handleInventoryButtonClick -> InfuserMenu.clickMenuButton -> InfuserBlockEntity.setSelectedIndex -> ContainerData / menu.getTarget -> screen label.
+No local optimistic tier mutation exists in the client screen.
+Independent /data get block SelectedIndex command did not produce a logged result. Do not claim independent NBT readback.
+Code change: only strengthen existing InfuserGameTests.menuSelectionSyncData to exercise 4 -> 5 -> 4 and 3, including invalid button ID 99.
+Build log: forge-port/run/qa-issue004-build.log (BUILD SUCCESSFUL in 12s)
+GameTest: forge-port/run/qa-issue004-gametest.log
+[23:41:03] [Server thread/INFO] [minecraft/GameTestServer]: ========= 35 GAME TESTS COMPLETE ======================
+[23:41:03] [Server thread/INFO] [minecraft/GameTestServer]: All 35 required tests passed :)
+Screenshot files retained in this evidence folder; temporary client-run logs remain in ignored forge-port/run/.

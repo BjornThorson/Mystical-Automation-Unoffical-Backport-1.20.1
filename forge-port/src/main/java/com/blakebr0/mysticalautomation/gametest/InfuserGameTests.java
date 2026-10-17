@@ -144,12 +144,29 @@ public final class InfuserGameTests {
             helper.fail("Infuser FE menu sync truncated 80k buffer");
             return;
         }
-        if (!menu.clickMenuButton(player, 3) || machine.getSelectedIndex() != 3) {
-            helper.fail("Infuser menu tier button did not select Imperium");
+        if (menu.getTarget() != 4) {
+            helper.fail("Infuser menu did not expose the initial Supremium target");
             return;
         }
-        if (menu.clickMenuButton(player, 99)) {
-            helper.fail("Infuser menu accepted an invalid tier selector");
+        // Mirror the graphical right/left arrows: Supremium -> Insanium -> Supremium.
+        if (!menu.clickMenuButton(player, 5)
+                || machine.getSelectedIndex() != 5 || menu.getTarget() != 5) {
+            helper.fail("Infuser menu did not synchronize right-arrow selection of Insanium");
+            return;
+        }
+        if (!menu.clickMenuButton(player, 4)
+                || machine.getSelectedIndex() != 4 || menu.getTarget() != 4) {
+            helper.fail("Infuser menu did not synchronize left-arrow selection of Supremium");
+            return;
+        }
+        if (!menu.clickMenuButton(player, 3)
+                || machine.getSelectedIndex() != 3 || menu.getTarget() != 3) {
+            helper.fail("Infuser menu tier button did not select and synchronize Imperium");
+            return;
+        }
+        if (menu.clickMenuButton(player, 99)
+                || machine.getSelectedIndex() != 3 || menu.getTarget() != 3) {
+            helper.fail("Infuser menu accepted an invalid tier selector or changed state");
             return;
         }
         helper.succeed();

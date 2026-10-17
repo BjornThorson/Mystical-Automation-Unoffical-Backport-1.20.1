@@ -1,3 +1,22 @@
+## Issue 004: Infuser GUI target-selection arrows (17 October 2026) - ACCEPTED
+
+Objective: Verify the existing Forge Infuser GUI arrow buttons with real mouse input and confirm server-authoritative tier synchronization. No processing or interface behaviour replacement was necessary.
+
+Evidence from real Minecraft 1.20.1 Forge disposable client (Xvfb/Mesa, world `Nex Disposable QA`):
+- Opened the actual Infuser GUI with an empty-hand simulated right click. Initially showed `Supremium` (tier 4).
+- Clicked the GUI right arrow; the displayed tier updated to `Insanium` (tier 5). Reopened the same machine and clicked the left arrow; the display returned to `Supremium` (tier 4).
+- The screen's tier label reads `InfuserMenu.getTarget()`, whose `ContainerData` is supplied from server-side `InfuserBlockEntity.getSelectedIndex()`. Client button clicks call `handleInventoryButtonClick`, and the server's `InfuserMenu.clickMenuButton` updates the block entity. The screen does not directly mutate a local selection value. Thus these observed changes provide strong evidence of client-to-server-to-client synchronization.
+- Three 1280x720 screenshots and a comparison crop are preserved in `qa-evidence/issue-004/`. This verifies the two exercised transitions and visually responsive buttons, not full inventory interaction.
+- A separate `/data get block ... SelectedIndex` command was attempted during QA but did not produce a corresponding result in the retained Minecraft log. It is **not** counted as independent NBT confirmation. No unexplained extra functionality is claimed.
+
+Regression coverage: Extended the pre-existing `InfuserGameTests.menuSelectionSyncData` GameTest to assert initial target 4, selection 5 then 4, another valid selection 3, rejection of invalid button 99, and consistency between server block entity and menu data. No new test fixture or new GameTest was added, so the total remains 35. Final Gradle build passed, and the **actual Minecraft GameTestServer logged all 35 required tests passed**.
+
+Audit boundaries: Only that GameTest Java class plus Issue 004 documentation and QA evidence changed. No machine behavior, recipes, client screen, texture, networking, inventories, saves, world data or unrelated projects were modified. Testing all tier boundaries, rapid clicks, disconnection/reconnection, 512-item transfers and multiplayer remains separate work. The mod is still unsuitable for Steph's live world.
+
+Status: accepted by project owner after technical and regression validation; included in Issue 004 backup checkpoint.
+
+---
+
 ## Issue 003: Disposable client QA simulation distance (17 October 2026) - ACCEPTED
 
 Scope: Correct the *development-only* Minecraft 1.20.1 Forge client configuration. No mod Java, recipe, block, menu, network, saved-world or gameplay logic changed.
