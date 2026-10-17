@@ -1,0 +1,31 @@
+{
+  "type": "crafting_shaped",
+  "neoforge:conditions": [
+    {
+      "type": "cucumber:feature_flag",
+      "flag": "mysticalautomation:enchanternator"
+    }
+  ],
+  "pattern": [
+    "IHI",
+    "SBS",
+    "ISI"
+  ],
+  "key": {
+    "I": {
+      "tag": "c:ingots/iron"
+    },
+    "S": {
+      "item": "mysticalagriculture:soulium_ingot"
+    },
+    "H": {
+      "item": "mysticalagriculture:enchanter"
+    },
+    "B": {
+      "item": "mysticalagriculture:machine_frame"
+    }
+  },
+  "result": {
+    "id": "mysticalautomation:enchanternator"
+  }
+}

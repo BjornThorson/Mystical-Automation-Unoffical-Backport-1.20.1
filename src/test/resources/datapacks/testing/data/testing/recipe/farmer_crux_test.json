@@ -1,0 +1,27 @@
+{
+  "type": "mysticalautomation:farmer",
+  "seeds": {
+    "item": "minecraft:potato"
+  },
+  "soil": {
+    "item": "minecraft:farmland"
+  },
+  "crux": {
+    "item": "minecraft:cobblestone"
+  },
+  "stages": 7,
+  "results": [
+    {
+      "item": {
+        "id": "minecraft:egg"
+      },
+      "chance": 1.0
+    },
+    {
+      "item": {
+        "id": "minecraft:emerald"
+      },
+      "chance": 0.5
+    }
+  ]
+}

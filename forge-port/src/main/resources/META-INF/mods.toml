@@ -1,0 +1,46 @@
+modLoader="javafml"
+loaderVersion="${loader_version_range}"
+license="MIT"
+
+[[mods]]
+modId="mysticalautomation"
+version="${mod_version}"
+displayName="Mystical Automation Unofficial Forge 1.20.1 Backport (INCOMPLETE)"
+authors="BlakeBr0 (original); unofficial backport contributors"
+displayURL="https://github.com/BlakeBr0/MysticalAutomation"
+description="Development-only build of full Mystical Automation 1.21.1 to Forge 1.20.1 backport. Machines are not yet functional."
+
+[[dependencies.mysticalautomation]]
+modId="forge"
+mandatory=true
+versionRange="${forge_version_range}"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.mysticalautomation]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.1,1.20.2)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.mysticalautomation]]
+modId="cucumber"
+mandatory=true
+versionRange="[7.0.16,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.mysticalautomation]]
+modId="mysticalagriculture"
+mandatory=true
+versionRange="[7.0.24,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.mysticalautomation]]
+modId="mysticalagradditions"
+mandatory=true
+versionRange="[7.0.12,)"
+ordering="AFTER"
+side="BOTH"
