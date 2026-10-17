@@ -1,3 +1,23 @@
+## Issue 001 accepted: first real-client Infuser GUI opening (17 October 2026)
+
+Status: **ACCEPTED for the narrow GUI-opening/visual-capture milestone**. This does not assert the whole GUI is functional or visually correct.
+
+Evidence:
+- Minecraft 1.20.1 Forge development client was launched using the disposable `Nex Disposable QA` world in Xvfb, with Mesa software rendering. The integrated server logged the player joining.
+- The previous failed interaction had produced ordinary chat text `p @s ~ ~ ~ 0 20`, consistent with chat-focus timing consuming the command prefix. With explicit chat open (`xdotool key t`), a 2-second focus delay, slow character input (`xdotool type --delay 95`), and Return, the `/say` diagnostic and subsequent world commands executed successfully.
+- To target the machine reliably from the player's *actual* position, the QA run entered `/execute at @s run setblock ~ ~1 ~3 mysticalautomation:infuser` and `/tp @s ~ ~ ~ 0 0`. A pre-click screenshot confirmed the block in the crosshair. A simulated right-click opened `InfuserScreen` and a post-click screenshot clearly showed the real in-game GUI.
+- Saved full-resolution screenshot (1280x720): `qa-evidence/issue-001/infuser-gui-2026-10-17.jpg`. SHA-256: `0abe153cb1c5d6c11cca9acf88ab740d5b0558cd1c1791912ed39529259873be`. Raw disposable-run logs and other screenshots remain under the ignored `forge-port/run/` directory.
+- The successful run is recorded in `forge-port/run/qa-issue001d-run.log` (local QA only); it finished after capturing the GUI. This test establishes actual opening and rendered appearance, not inventory interaction.
+
+Audit findings / separate future issues:
+- The screenshot visibly shows the target label extending into the right-arrow button and the progress text crossing the central process area. Audit `InfuserScreen.java` label positions and GUI texture dimensions in a **separate layout issue**.
+- `forge-port/run/options.txt` contains `simulationDistance:2`, rejected by the Minecraft 1.20.1 client as below the permitted 5..33 range. Correct the disposable QA profile in a **separate environment issue**, without touching Steph's settings.
+- All cursor/shift-click controls, actual 512-item quantity overlays, network synchronization, multiplayer, client reconnect, save/reload, external automation and Crafter visual tests remain **unverified**.
+- This issue made **no gameplay/source-code changes**. The previous 35/35 GameTest result is preserved historical evidence; GameTests were **not rerun** for this documentation-and-screenshot checkpoint.
+- The mod is still development-only. **Do not install it in Steph's existing world.**
+
+---
+
 ## Disposable graphical world test, incomplete GUI milestone
 - Created a real disposable singleplayer Creative world called Nex Disposable QA within forge-port/run/saves.
 - Client render thread loaded the Forge mod and rendered the Minecraft title and world creation UI.
