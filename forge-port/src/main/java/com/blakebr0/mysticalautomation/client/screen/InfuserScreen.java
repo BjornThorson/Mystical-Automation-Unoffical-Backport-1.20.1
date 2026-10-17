@@ -49,10 +49,13 @@ public final class InfuserScreen extends AbstractContainerScreen<InfuserMenu> {
         graphics.drawString(font, title, 29, 6, 0x404040, false);
         graphics.drawString(font, Component.literal("FE: " + menu.getEnergy() + "/" + menu.getMaximumEnergy()),
                 24, 15, 0x404040, false);
-        graphics.drawString(font, Component.literal("Target: " + TARGETS[Math.max(1, Math.min(5, menu.getTarget()))]),
-                125, 86, 0x404040, false);
-        graphics.drawString(font, Component.literal("Progress: " + menu.getProgress() + "/" + menu.getOperationTicks()),
-                102, 65, 0x404040, false);
+        // Keep status text inside the empty regions of the original 217x194 GUI texture.
+        // Its output slot and progress widgets occupy the old label positions.
+        drawFittedLabel(graphics,
+                "Progress: " + menu.getProgress() + "/" + menu.getOperationTicks(), 103, 21, 84);
+        graphics.drawString(font, Component.literal("Target:"), 54, 66, 0x404040, false);
+        drawFittedLabel(graphics,
+                TARGETS[Math.max(1, Math.min(5, menu.getTarget()))], 29, 81, 70);
         graphics.drawString(font, playerInventoryTitle, 29, 100, 0x404040, false);
         for (int i = 0; i < 6; i++) {
             int count = menu.getEssenceCount(i);
@@ -66,6 +69,21 @@ public final class InfuserScreen extends AbstractContainerScreen<InfuserMenu> {
                     0, 0xFFFFFF, true);
             graphics.pose().popPose();
         }
+    }
+
+    /**
+     * Centers a label in a bounded clear area of the upstream GUI.
+     * Long values shrink to fit instead of drawing over machine slots or buttons.
+     */
+    private void drawFittedLabel(GuiGraphics graphics, String value, int x, int y, int width) {
+        int textWidth = font.width(value);
+        if (textWidth <= 0) return;
+        float scale = Math.min(1.0f, (float) width / textWidth);
+        graphics.pose().pushPose();
+        graphics.pose().translate(x + width / 2.0f, y, 0);
+        graphics.pose().scale(scale, scale, 1.0f);
+        graphics.drawString(font, Component.literal(value), -textWidth / 2, 0, 0x404040, false);
+        graphics.pose().popPose();
     }
 
     @Override

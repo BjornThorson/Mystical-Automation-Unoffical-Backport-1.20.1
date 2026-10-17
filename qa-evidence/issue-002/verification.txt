@@ -1,0 +1,21 @@
+Issue 002 QA verification evidence (2026-10-17)
+Status: technical verification and audit complete; accepted by project owner. Backup verified separately after approval.
+
+Code scope: forge-port/src/main/java/com/blakebr0/mysticalautomation/client/screen/InfuserScreen.java
+Forge/Minecraft target: Forge 47.4.24 / Minecraft 1.20.1
+Build: ./gradlew build --no-daemon --console=plain --max-workers=2
+Build result: BUILD SUCCESSFUL in 11s (run/qa-issue002b-build.log)
+GameTests: ./gradlew runGameTestServer --no-daemon --console=plain --max-workers=2
+Actual Minecraft log:
+[17:59:20] [Server thread/INFO] [minecraft/GameTestServer]: ========= 35 GAME TESTS COMPLETE ======================
+[17:59:20] [Server thread/INFO] [minecraft/GameTestServer]: All 35 required tests passed :)
+Static check: python3 forge-port/scripts/check_foundation.py : passed.
+
+Real client: Gradle runClient -PqaQuickPlayWorld="Nex Disposable QA" under Xvfb + Mesa; player joined, /setblock via /execute at @s, orientation /tp, real right-click, GUI screenshot captured.
+Evidence image: qa-evidence/issue-002/infuser-gui-after-2026-10-17.jpg
+SHA256: 1b724c317ed1fdff01807d91d8962116baee5dc7557333b779afa514d53486ec
+
+Visual inspection: progress above six essence slots and outside output/tier controls; 'Target:' to the right of fuel slot; selected essence below in clear area. No obvious label-slot overlap in tested state (Supremium).
+Not tested: visual states for every tier/energy/progress value, keyboard/mouse manipulation inside slots, 512-item quantities, network sync or multiplayer.
+Known unrelated QA issue: simulationDistance:2 invalid in 1.20.1; profile was NOT changed.
+Full detailed QA output remains under ignored forge-port/run directory; it is not part of this evidence snapshot.

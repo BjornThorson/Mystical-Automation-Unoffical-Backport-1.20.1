@@ -1,3 +1,17 @@
+## Issue 002: Infuser GUI label alignment (17 October 2026) - ACCEPTED
+
+Scope: Adjust text placement only in Forge `InfuserScreen.java`, retaining the original 217x194 upstream texture, menus, inventory positions, output slot, machine logic and controls.
+- The progress value now appears above the six essence slots, center-aligned within a bounded 84-pixel area; long text scales down to fit.
+- The caption `Target:` appears right of the furnace-fuel slot, with the essence tier on its own line in the open lower-left panel. The tier name is centered inside a 70-pixel area and shrinks if necessary.
+- The first visual trial identified a residual fuel-slot overlap. The final position was corrected and checked again in a real Minecraft client.
+
+Verification: successful Forge build; fresh actual Minecraft GameTestServer run `All 35 required tests passed :)`; static foundation check passed. Disposable singleplayer Forge client loaded, block spawned and right-clicked, and the final Infuser GUI screenshot was inspected. No overlaps of these labels with slots or buttons were visible in the tested default Supremium state.
+Evidence: `qa-evidence/issue-002/infuser-gui-after-2026-10-17.jpg` and `qa-evidence/issue-002/verification.txt`.
+Audit: Only the screen Java class and this issue's documentation/evidence are in scope; no machine, recipe, storage, menu packet or save-data changes. Other tier labels, dynamic high-value readouts, input interactions and multiplayer remain for future testing. The unrelated `simulationDistance:2` problem remains unresolved.
+Status: accepted by project owner after technical verification and audit. Capture and test records are preserved with the checkpoint. Development JAR remains unsafe for Steph's existing world.
+
+---
+
 ## Issue 001 accepted: first real-client Infuser GUI opening (17 October 2026)
 
 Status: **ACCEPTED for the narrow GUI-opening/visual-capture milestone**. This does not assert the whole GUI is functional or visually correct.
