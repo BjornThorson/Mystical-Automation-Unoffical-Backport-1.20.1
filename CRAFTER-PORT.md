@@ -1,5 +1,13 @@
 # Crafter: Forge 1.20.1 port checkpoint
 
+## Issue 008: Crafter ghost-blueprint graphical QA (18 October 2026) - ACCEPTED
+
+Verified in a real Forge 1.20.1 Survival-mode client: a cursor-held 32-oak-plank stack populated the first blue ghost recipe cell with a single visual oak plank; returning the cursor stack left all **32** in the player's hotbar. Closing and reopening the menu retained the ghost entry. A separate second real-client run cleared that entry using a normal left-click with an empty cursor; again all **32** remained with the player.
+
+The existing server menu uses `CrafterMenu.clicked` for slots 12..20, copying one item to the pattern without consuming the cursor; the already-existing GameTest covers creating and clearing such ghost entries. New build, foundation and **35/35 Minecraft GameTestServer** results passed. No gameplay changes. Evidence: `qa-evidence/issue-008/`, including six actual screenshots and a six-stage visual comparison. Real-client right click, rapid actions, full nine-slot blueprint, crafting output and multiplayer remain unverified. Owner accepted the real-client screenshots; final GitHub/Drive backup verified separately.
+
+---
+
 ## Issue 007: Crafter progress-label real-client fix (18 October 2026) - ACCEPTED
 
 Corrected the Issue 006 GUI defect in Forge `CrafterScreen.java`. Previously the progress readout at (100,75) overlapped the ghost blueprint and ran beyond the GUI edge. It is now centered in an 81-pixel-wide clear strip beginning at (88,87), with bounded scaling for longer values. The original upstream 176x217 texture and all slot positions remain unchanged.

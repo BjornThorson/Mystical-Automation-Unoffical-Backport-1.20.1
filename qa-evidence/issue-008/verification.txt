@@ -1,0 +1,21 @@
+Issue 008: Real-client Crafter blueprint ghost-item QA
+Status: technical verification complete and accepted by project owner after screenshot review; included in the Issue 008 backup checkpoint.
+Date: 2026-10-18 UTC; Minecraft 1.20.1 Forge 47.4.24, disposable Survival-mode QA world.
+Real-client case A: 32 oak planks in hotbar -> picked onto cursor -> click first ghost blueprint slot -> single ghost visual.
+Case B: Return held stack -> 32 oak planks still in hotbar and ghost recipe icon remains.
+Case C: Close/reopen same Crafter -> ghost remains and 32 items still in player hotbar.
+Case D: separate completed run sets ghost, returns cursor-held 32 planks, clicks ghost with empty cursor -> ghost disappears; 32 planks remain.
+Initial run ended during follow-on clearing action when Vercel session retired; do not claim it was completed in that run.
+Both client passes restored disposable profile tutorialStep:movement.
+No production or GameTest source changes. Existing GameTest ghostMenuDoesNotConsumeTemplateItem covers server menu create/clear.
+Forge build: BUILD SUCCESSFUL.
+Minecraft GameTestServer: All 35 required tests passed :)
+Static foundation script: PASS.
+Actual QA screenshots:
+  blueprint-cursor-32.jpg : 47216 bytes SHA256=284dc73ec7d42b75c77c176a51054c5744148c80748c0b14823339efd7a259db
+  blueprint-empty-before.jpg : 47290 bytes SHA256=909cc858cf796f233f75b3ed295792fe77ad09dbdfdd2b206b4484f0845cf5da
+  blueprint-ghost-cleared.jpg : 47316 bytes SHA256=f325394c8f5431203947bab6eac3e8f11b5d555d028723438c749f42ac979ecf
+  blueprint-ghost-reopened.jpg : 47720 bytes SHA256=9befdaea667e74b75e20bd277bdc3ee745a18012cb20fa726018dd25051a5959
+  blueprint-ghost-set.jpg : 47513 bytes SHA256=0b15e027ba2f992221d8a864f120bef73a7711d88262394a67147df2e8ee0ee0
+  blueprint-six-stage-comparison.jpg : 104043 bytes SHA256=56c48a51e4726eb3c97c1483903ad96c073840d77154c1285b61c72a654c923d
+  blueprint-stack-returned.jpg : 48390 bytes SHA256=ec8207dfd459fa3f41c2506c70f01b375df5906c7eb8ce30b492c6e2dbca052c

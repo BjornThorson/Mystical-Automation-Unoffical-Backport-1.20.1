@@ -1,3 +1,24 @@
+## Issue 008: Crafter ghost-blueprint mouse interactions (18 October 2026) - ACCEPTED
+
+Goal: Validate the Crafter's *real graphical client* blueprint interaction, where clicking a blueprint cell with a carried item should copy a **single nonconsumable ghost ingredient**, then clicking that cell with an empty cursor should clear it. Keep all gameplay logic, slot positions and upstream assets unchanged.
+
+Actual Forge 1.20.1 Survival-mode QA in the disposable `Nex Disposable QA` world (Xvfb/Mesa):
+- Placed the Crafter, opened its real 176x217 GUI, and prepared **32 oak planks** in player hotbar slot 0.
+- Picked up the real stack with a normal left click; the hotbar slot became empty while the cursor held the stack.
+- Left-clicked the *first* upper-left blue ghost blueprint cell with the 32-plank cursor. A single oak plank icon appeared in the ghost cell, with the actual items remaining available to return to inventory.
+- Left-clicked the player's first hotbar slot to return the full **32 oak planks**, leaving the recipe ghost visible. Closed and reopened the same Crafter GUI: the ghost blueprint entry was still displayed and all 32 items remained in the player's hotbar.
+- A shorter subsequent disposable-client pass re-established the ghost pattern and then left-clicked it with an *empty cursor*. The ghost entry visibly disappeared, and the original **32 oak planks** remained in the hotbar.
+
+Evidence: `qa-evidence/issue-008/` contains six original unaltered Minecraft screenshots, a combined six-stage comparison image, and `verification.txt`. First run ended when the Vercel session retired after the reopening screenshot, so its clearing step was **not** credited. The separate completed second run proves clearing. Both QA sessions restored `tutorialStep:movement` in the ignored disposable profile.
+
+Mechanism and regression: The existing `CrafterMenu.clicked` processes blueprint slots 12..20 on a PICKUP click by copying `getCarried()` and constraining the copy to one, without decrementing the held stack; empty cursor writes an empty ghost pattern. The existing `CrafterGameTests.ghostMenuDoesNotConsumeTemplateItem` tests these two server-side cases. A new Forge build, static foundation check and actual Minecraft GameTestServer run all passed; **35/35 required GameTests**. No Forge Java class, test, menu, recipe, packet or texture changes were necessary.
+
+Limits: Only the first blueprint cell and left-click PICKUP were exercised in a real GUI. Right-click variants, middle-click, shift-click, drag, nine-cell workflows, shaped/shapeless recipe execution, persistence across server shutdown, multiplayer, creative-mode gestures and network jitter need separate coverage. This development build remains **unsafe for Steph's existing world**.
+
+Status: **accepted by project owner** after review of the actual six-stage Minecraft comparison; checkpoint backup to GitHub main and Google Drive verified separately.
+
+---
+
 ## Issue 007: Crafter progress-label alignment (18 October 2026) - ACCEPTED
 
 Scope: Correct the progress-text overlap documented in Issue 006 by changing **only** `forge-port/src/main/java/com/blakebr0/mysticalautomation/client/screen/CrafterScreen.java`. Retain the original upstream 176x217 Crafter GUI texture, all inventory and ghost-blueprint slot locations, the output/fuel/upgrade widgets, machine data, networking, persistence, gameplay and recipes.
