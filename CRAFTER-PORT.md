@@ -1,5 +1,13 @@
 # Crafter: Forge 1.20.1 port checkpoint
 
+## Issue 007: Crafter progress-label real-client fix (18 October 2026) - ACCEPTED
+
+Corrected the Issue 006 GUI defect in Forge `CrafterScreen.java`. Previously the progress readout at (100,75) overlapped the ghost blueprint and ran beyond the GUI edge. It is now centered in an 81-pixel-wide clear strip beginning at (88,87), with bounded scaling for longer values. The original upstream 176x217 texture and all slot positions remain unchanged.
+
+Real Minecraft Forge GUI screenshot shows `Progress: 0/200` neatly below the blueprint; no observed slot or arrow overlap. Build passed, static foundation passed, a fresh actual GameTestServer reported **all 35 required tests passed**. See `qa-evidence/issue-007/` for actual screenshots and comparison. Only a screen-renderer change, not blueprint-click functionality. Owner accepted the corrected GUI after screenshot review; final backup verified separately.
+
+---
+
 ## Issue 006 real-client visual inspection (18 October 2026) - ACCEPTED
 
 The actual Forge graphical client successfully loaded the disposable QA world and opened the Crafter GUI with a right-click. The blue nine-slot ghost blueprint, nine real-material slots, furnace-fuel slot, output, upgrade slot, inventory, and FE/progress readings were visible. Original GUI texture is byte-for-byte identical to upstream. Found a concrete label defect: `Progress: 0/200` crosses the blueprint and process area and clips beyond the right edge. A second captured image without the Minecraft tutorial overlay independently shows the upgrade slot.

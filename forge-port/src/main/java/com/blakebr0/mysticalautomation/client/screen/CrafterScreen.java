@@ -28,9 +28,23 @@ public final class CrafterScreen extends AbstractContainerScreen<CrafterMenu> {
         graphics.drawString(font, title, 8, 6, 0x404040, false);
         graphics.drawString(font, Component.literal(menu.getEnergy() + "/" + menu.getMaximumEnergy() + " FE"),
                 24, 16, 0x404040, false);
-        graphics.drawString(font, Component.literal("Progress: " + menu.getProgress()
-                        + "/" + menu.getOperationTicks()), 100, 75, 0x404040, false);
+        // The recipe blueprint occupies x=56..108, y=30..82. Keep the
+        // progress text in the clear strip beneath it and above ingredient stock.
+        drawFittedProgress(graphics, "Progress: " + menu.getProgress()
+                + "/" + menu.getOperationTicks(), 88, 87, 81);
         graphics.drawString(font, playerInventoryTitle, 8, 123, 0x404040, false);
+    }
+
+    /** Center in a bounded strip; shrink long readouts before they reach GUI slots. */
+    private void drawFittedProgress(GuiGraphics graphics, String label, int x, int y, int width) {
+        int textWidth = font.width(label);
+        if (textWidth <= 0) return;
+        float scale = Math.min(1.0f, (float) width / textWidth);
+        graphics.pose().pushPose();
+        graphics.pose().translate(x + width / 2.0f, y, 0);
+        graphics.pose().scale(scale, scale, 1.0f);
+        graphics.drawString(font, Component.literal(label), -textWidth / 2, 0, 0x404040, false);
+        graphics.pose().popPose();
     }
 
     @Override public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {

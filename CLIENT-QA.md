@@ -1,3 +1,17 @@
+## Issue 007: Crafter progress-label alignment (18 October 2026) - ACCEPTED
+
+Scope: Correct the progress-text overlap documented in Issue 006 by changing **only** `forge-port/src/main/java/com/blakebr0/mysticalautomation/client/screen/CrafterScreen.java`. Retain the original upstream 176x217 Crafter GUI texture, all inventory and ghost-blueprint slot locations, the output/fuel/upgrade widgets, machine data, networking, persistence, gameplay and recipes.
+
+Implementation: The old `Progress: ...` label began at GUI x=100,y=75, crossing the last recipe-blueprint row and overrunning the right edge. The corrected label occupies the clear strip under the blueprint and above the ingredient row, positioned within x=88..169, y=87..96. A small screen-only helper centers the string in this **81-pixel-wide bound** and scales longer readings down to fit instead of drawing over inventory slots or extending outside the panel. The value still comes directly from existing `menu.getProgress()` and `menu.getOperationTicks()`.
+
+Verification: A clean disposable Forge 1.20.1 client launched and opened the Crafter by real right-click after the correction, with the introductory tutorial notification temporarily disabled for photographic QA and restored afterward. A new full-resolution screenshot, a cropped detail and a before/after comparison were checked. The observed `Progress: 0/200` readout is fully visible below the grid, does not overlap slots or the arrow, and stays inside the original panel. The Forge `./gradlew build` passed and a **fresh real Minecraft GameTestServer run passed all 35 required tests**; the static foundation checker passed. Evidence: `qa-evidence/issue-007/`.
+
+Audit boundaries: No upstream `src/` changes and no machine, menu, recipe, asset, test fixture, inventory or saved-world changes. Unverified: all possible live high progress values, nondefault GUI scales, modded font settings, multiplayer and Crafter ghost-blueprint mouse interaction. The latter remains the next proposed focused issue. This incomplete development JAR remains **unsafe for Steph's existing world**.
+
+Status: **accepted by project owner** after review of the actual Minecraft screenshot and before/after comparison. Final GitHub main and Drive backup verified separately.
+
+---
+
 ## Issue 006: Crafter graphical GUI inspection (18 October 2026) - ACCEPTED
 
 Objective: Open the existing Forge 1.20.1 Crafter menu in a real Minecraft client and visually inspect the original background, nine-slot ghost recipe blueprint, independent nine-slot material storage, output, fuel and machine-upgrade slots, labels, energy reading, and player inventory. This is a **visual-opening issue only**. Blueprint mouse interactions and recipe execution in the client are separate issues.

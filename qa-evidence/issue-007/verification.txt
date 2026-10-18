@@ -1,0 +1,15 @@
+Issue 007 Crafter progress GUI label alignment
+Date: 2026-10-18 UTC
+Status: implementation and technical QA complete; accepted by project owner after screenshot review; included in Issue 007 backup checkpoint.
+Screen-only change: CrafterScreen.java progress label x=100,y=75 replaced with fitted label area x=88..169, y=87..96, width 81.
+Existing 176x217 upstream Crafter texture, menu slot positions and machine logic unchanged.
+Real Forge 1.20.1 client connected to disposable Nex Disposable QA world; opened Crafter by simulated right click.
+Before: progress text overlaps ghost grid and extends beyond panel; after: Progress: 0/200 under grid, inside GUI.
+Original client tutorialStep:movement restored after temporary tutorial notification suppression.
+Forge Gradle build: BUILD SUCCESSFUL.
+GameTestServer: All 35 required tests passed :)
+Static foundation checker: PASS
+Evidence SHA-256:
+  crafter-gui-after.jpg: 48091 bytes; sha256=ff26b42afe1fe1c10390ea92d483145765d350ecc840d67a7d2f58f7f81f24e2
+  crafter-gui-after-detail.jpg: 20839 bytes; sha256=61488cdcea352fe9f171bbfecfb2444c96bc42c61738cc815c2aaa4071399624
+  crafter-before-after.jpg: 31778 bytes; sha256=bea54529a5b1c94bb5071df9ac8057f34a8a82a9dc906ab8c5ebc8e1ab2219f0
