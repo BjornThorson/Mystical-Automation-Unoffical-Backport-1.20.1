@@ -1,3 +1,23 @@
+## Issue 005: Real-client Infuser 512-item buffer interactions (18 October 2026) - ACCEPTED
+
+Scope: Graphical and server-backed inventory QA for the existing safe-preview / `ContainerData` architecture, using a *disposable* Minecraft Forge 1.20.1 Survival-mode world. No machine implementation, menu logic, network code, recipes, test source or resource assets were changed.
+
+**64-item baseline (17 October, UTC):** A command placed 64 Inferium Essence in an empty player's hotbar. An actual shift-click moved the entire batch into the Infuser's first input slot. A left-click withdrew the batch to the cursor, and a normal click placed it back into the hotbar. Screenshots before, after insertion, during cursor withdrawal and after returning the stack show the conservation of 64 items.
+
+**512-item boundary and overflow (18 October, UTC):** Starting with an empty player inventory and new Infuser, `/give` supplied 512 Inferium Essence in eight normal 64-item player stacks. Eight real GUI shift-clicks filled the first staging input. The menu's separately synchronized count overlay visibly read **512**. An additional `/give` supplied a ninth 64-item stack, which remained in the player's hotbar after shift-clicking against the full input; the input remained **512**. Clicking the staging slot withdrew a normal 64-item batch, and the displayed backing count changed to **448**. Returning that batch to a second player hotbar slot left two ordinary 64-item stacks with the player, plus 448 in the machine: all **576** accounted for.
+
+Verification method: The client GUI's displayed count comes from `InfuserMenu.getEssenceCount()`, bound to server-provided `ContainerData`, while the slot sends a safe one-item preview. Existing Minecraft GameTests separately cover full 512-item backing storage, capacity rejection, the 512-to-448 extraction, NBT persistence and packet-safe previews. A new Forge build, static foundation check and complete GameTestServer run passed: **35/35 required tests**. This confirms these observed mouse interactions but is not an independent block-NBT query; no claim is made about all possible inventory gestures, modded pipes or multiplayer.
+
+Evidence: `qa-evidence/issue-005/` contains nine exact client screenshots, focused comparison images, and `verification.txt` with hash list and the relevant test logs. Detailed client/test logs remain ignored under `forge-port/run/`.
+
+Unverified/future work: direct cursor deposit into an already partly filled buffer, right-click single-item transfers, drag/double-click/hotbar-number restrictions in the live client, rapid repeated clicks, reconnect/reload, other essence tiers, multiplayer and external automation interoperability. No defects were observed within this issue's tested scope; full backport remains incomplete and **must not be installed in Steph's existing world**.
+
+**Review evidence policy:** For future graphical QA issues, include a viewable real-client screenshot (preferably a clickable direct image link) with the review **before** requesting approval. Use a comparison image for visual before/after or multi-state results when helpful. If in-chat images are unavailable, publish a review-only screenshot without updating the main backup branch or treating the issue as approved. The Issue 005 review preview was published on `review/issue-005-screenshot` as a separate branch; the final images are archived in `qa-evidence/issue-005/`.
+
+Status: **accepted by project owner** after inspection of an actual Minecraft screenshot; checkpoint is backed up and verified separately.
+
+---
+
 ## Issue 004: Infuser GUI target-selection arrows (17 October 2026) - ACCEPTED
 
 Objective: Verify the existing Forge Infuser GUI arrow buttons with real mouse input and confirm server-authoritative tier synchronization. No processing or interface behaviour replacement was necessary.

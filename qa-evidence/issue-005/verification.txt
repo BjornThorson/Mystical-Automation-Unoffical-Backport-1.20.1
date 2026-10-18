@@ -1,0 +1,26 @@
+Issue 005: Infuser 512-stack real GUI testing
+Status: technically verified and accepted by project owner; included in the Issue 005 backup checkpoint
+Target: Minecraft 1.20.1, Forge 47.4.24, Xvfb/Mesa disposable client in Survival mode
+Client case 1: 64-item hotbar -> shift-click first input -> left-click withdraw 64 -> return to hotbar; no visible loss
+Client case 2: /give 512; eight shift-click 64 transfers to input; synced count 512
+Client case 3: ninth 64-item shift-click rejected while input remains 512; player retains stack
+Client case 4: left-click withdraw 64; synced backing count 448; return withdrawn stack to different player slot
+Conservation after case 4: machine 448 + player 128 = 576 (512 initial + 64 overflow attempt)
+Screenshot source is disposable forge-port/run; copies are byte-for-byte identical.
+No independent /data block NBT readback; client count depends on server-provided ContainerData.
+No Java source modifications; existing tests already cover capacity, persistence, menu count and serialized safe preview.
+Build: BUILD SUCCESSFUL; static foundation check passed.
+Minecraft GameTestServer: All 35 required tests passed :)
+Screenshot SHA256:
+  qa-issue005-before.jpg 591c878bce1a4ba22ac551d5801fba1971960b5ab405fdfcb3ac95001eafbac6
+  qa-issue005-insert64.jpg 2015e57df4da270e2bad2d1683fd7beaae073f85b301659dab84e2dbcf3bffc8
+  qa-issue005-cursor64.jpg b6f1ca7f6443b25a3282edb224f87c179dd9f9e13f23f56f1e660d201fa0b167
+  qa-issue005-return64.jpg d5f8de7dab16c2e3a46cfe73cd028713629520539f5223dacfb79572b10ab6c2
+  qa-issue005-full512-before.jpg ceb74d96fc2f4c96df6ee634ce8e49e881a411acd7eb1df4a67d944633057f97
+  qa-issue005-full512-full512.jpg e54d0ada1161f7f2ab1c78acffd6ec049a225d4e76921204acda4e62a67b4322
+  qa-issue005-full512-overflow.jpg f9ab2f3e26428602a97ad3681b95fa9a20ea60a755723abe108589653c64b2ec
+  qa-issue005-full512-withdraw.jpg 546cb4a927cfd876d2d5fd03790f281517ae7f4f37e51a8a3ceea8990d4a81b5
+  qa-issue005-full512-returned.jpg 87cc0b5690f612089f05e278d9164d17613290dc032b30b53ea99fb3a42c0bae
+  single-stack-four-stages.jpg c1ff50a7588015bc1b4ad37e243b78c4119ca409438a48a649d4f47fd9c983f2
+  buffer-boundary-five-stages.jpg b0e6a8ce94d641f203537f6d1c2e0d907ae7f72281f2d540395b37c381ee02bd
+  count-overlay-512-to-448.jpg ee9b89c29064ab95fc347e63c1d613d29b29b8cd2c7aa4fce7b560ba6d7262cf
