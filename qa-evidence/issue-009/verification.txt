@@ -1,0 +1,26 @@
+Issue 009: Crafter actual GUI end-to-end crafting-table workflow
+Status: technically verified and accepted by project owner after screenshot review; archived in the Issue 009 checkpoint
+Date: 2026-10-18 UTC; Forge 47.4.24, Minecraft 1.20.1, disposable Survival-mode QA world.
+Critical isolation: /execute at @s run setblock ~ ~1 ~3 minecraft:air followed by setting the new Crafter.
+Initial clean GUI: ghost recipe empty, input material slots empty, fuel empty, output empty.
+Recipe: 2x2 ghost oak-plank pattern; exactly four real planks provided to pooled ingredient storage.
+Fuel: one coal shift-clicked into furnace-fuel slot, burned into FE; actual progress observed.
+Result: four real planks consumed, exactly one crafting table appears in the actual output slot.
+Output retrieval: left-click output, place one crafting table in player hotbar.
+Invalid initial QA attempt: reused block entity already held one crafting table at start; next craft showed two; do not treat as a valid fresh-machine result or a mod duplication issue.
+Both attempts restored ignored QA option tutorialStep:movement.
+No actual /data get block NBT readback claimed; UI plus pre-existing real Minecraft GameTests cover observable behavior.
+Existing GameTest: CrafterGameTests.craftsVanillaTableFromPooledInputs.
+Forge build: BUILD SUCCESSFUL; static checker PASSED.
+Real Minecraft GameTestServer: All 35 required tests passed :).
+No gameplay source changes.
+Screenshots SHA256:
+ crafter-after-crafting.jpg 49859 bytes 3dd92bf94b16a60580c1d775aa14660bde9bbc9462c8900242c3e74833c09199
+ crafter-blueprint-four.jpg 49505 bytes 64716730e5c0f0292afb5008b6b45563c47da932d6552cd66bb21e280c4f286b
+ crafter-empty-gui.jpg 48208 bytes e9b06282c7512a36889c6c8f7259d67aae60fb50fc186d41e7294290c26a481d
+ crafter-fuel-loaded.jpg 49644 bytes d522e62ebce54e19fa20ab5dcff610d4c495bc1104b0b492508987dfee1d7721
+ crafter-full-cycle-comparison.jpg 97490 bytes 1b77fface9049e419a0d56f66cb2f3724202a8b37225095f2e26f125e4b279ef
+ crafter-result-cursor.jpg 49740 bytes 6d329c18d72fb8e1a1fe447d5bd9563e617ecfd9be02a14cf1a59f8f5fad6bd7
+ crafter-result-returned.jpg 49789 bytes 1dbd389bbf7370bb2f2a9deadd168fd44e3e0338883869f09c3b081bd657e241
+ crafter-stock-loaded.jpg 49518 bytes 93815a80760f86ab51228c481e6bc08dd8a5c207b96e60f46dcb9aed1137cf71
+ qa-reused-machine-detected.jpg 50606 bytes dbecb3437e6dda463e235e286da0c293fbb24f5fe1f8372606ea242b7f2bf209

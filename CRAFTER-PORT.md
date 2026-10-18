@@ -1,5 +1,13 @@
 # Crafter: Forge 1.20.1 port checkpoint
 
+## Issue 009: Real-client end-to-end crafting-table recipe (18 October 2026) - ACCEPTED
+
+A clean disposable Minecraft 1.20.1 Forge Crafter was created by replacing the prior machine with air **before** placing a new Crafter block entity. Using the real GUI, four oak planks were assigned as a 2x2 **ghost blueprint**, then all four real planks were shift-clicked into pooled stock and one coal item supplied to the fuel slot. Processing advanced, all four real input planks were consumed, **one crafting table** appeared in the output, and the player collected that table through the GUI. Seven full-resolution actual client screenshots and a five-stage comparison: `qa-evidence/issue-009/`.
+
+A previous trial erroneously reused the old block entity, so its output already contained a crafting table before the next cycle. That invalid starting state is archived for QA transparency, but is **not** a product defect; the final clean run demonstrated exactly four planks yielding one table. Future disposable-machine tests must reset the block entity explicitly. Fresh Forge build, static foundation and **35/35 real Minecraft GameTests** passed. No game-code change. Other recipe shapes, repeated cycles, multiplayer and external automation remain unverified. Owner accepted the screenshot-based review; final GitHub and Drive backup verified separately.
+
+---
+
 ## Issue 008: Crafter ghost-blueprint graphical QA (18 October 2026) - ACCEPTED
 
 Verified in a real Forge 1.20.1 Survival-mode client: a cursor-held 32-oak-plank stack populated the first blue ghost recipe cell with a single visual oak plank; returning the cursor stack left all **32** in the player's hotbar. Closing and reopening the menu retained the ghost entry. A separate second real-client run cleared that entry using a normal left-click with an empty cursor; again all **32** remained with the player.
