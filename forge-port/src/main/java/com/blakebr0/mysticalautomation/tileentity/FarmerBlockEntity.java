@@ -7,6 +7,14 @@ import com.blakebr0.mysticalagriculture.container.inventory.UpgradeItemStackHand
 import com.blakebr0.mysticalagriculture.util.IUpgradeableMachine;
 import com.blakebr0.mysticalagriculture.util.MachineUpgradeTier;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.network.chat.Component;
+import com.blakebr0.mysticalautomation.container.FarmerMenu;
+
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.SimpleContainer;
@@ -28,7 +36,7 @@ import java.util.List;
  * base operation, staged progress, permanent seed/soil/crux inputs and rolled
  * harvest outputs. This is a server processor, GUI still pending.
  */
-public final class FarmerBlockEntity extends MachineShellBlockEntity implements IUpgradeableMachine {
+public final class FarmerBlockEntity extends MachineShellBlockEntity implements IUpgradeableMachine, MenuProvider {
     public static final int FUEL = 3;
     public static final int FIRST_OUTPUT = 4;
     public static final int LAST_OUTPUT = 12;
@@ -70,6 +78,37 @@ public final class FarmerBlockEntity extends MachineShellBlockEntity implements 
     public int getStageProgress() { return stageProgress; }
     public int getStages() { return stages; }
     public boolean isRunning() { return running; }
+
+    /** 32-bit FE fields are split for Minecraft's short-sized ContainerData packets. */
+    public ContainerData getDisplayData() {
+        return new ContainerData() {
+            @Override public int get(int index) {
+                return switch (index) {
+                    case 0 -> energy.getEnergyStored() & 0xFFFF;
+                    case 1 -> (energy.getEnergyStored() >>> 16) & 0xFFFF;
+                    case 2 -> energy.getMaxEnergyStored() & 0xFFFF;
+                    case 3 -> (energy.getMaxEnergyStored() >>> 16) & 0xFFFF;
+                    case 4 -> fuelLeft;
+                    case 5 -> ForgeHooks.getBurnTime(inventory.getStackInSlot(FUEL), null);
+                    case 6 -> progress;
+                    case 7 -> getOperationTicks();
+                    case 8 -> stages;
+                    case 9 -> stageProgress;
+                    case 10 -> getOperationTicks() * stages;
+                    default -> 0;
+                };
+            }
+            @Override public void set(int index, int value) { /* server authoritative */ }
+            @Override public int getCount() { return 11; }
+        };
+    }
+    @Override public Component getDisplayName() {
+        return Component.translatable("container.mysticalautomation.farmer");
+    }
+    @Override public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+        return new FarmerMenu(id, inventory, this);
+    }
+
 
     public static void tickServer(Level level, BlockPos pos, BlockState state, FarmerBlockEntity farmer) {
         farmer.tick();

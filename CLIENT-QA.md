@@ -1,3 +1,23 @@
+## Issue 010: Farmer GUI implementation and real-client inspection (18 October 2026) - ACCEPTED
+
+Objective: Restore the functional client interface for the already-working, recipe-driven **virtual crop Farmer** in the unofficial Forge 1.20.1 backport. The original 176x194 upstream GUI texture and slot coordinates must remain unchanged, with seed, soil, optional crux, fuel, nine output slots, upgrade slot, player inventory, and server-synchronized status.
+
+Implementation (scoped to the Farmer GUI/menu):
+- New Forge `FarmerMenu`, with original upstream slot geometry: machine upgrade at (152,9); seed/soil/crux at (60,30/52/74); fuel at (30,56); 3x3 output area starting (116,34); player storage at y=112 and hotbar y=170. The original 16-slot machine backing inventory retains its three reserved slots 13-15; menu exposes 14 machine positions and 36 player positions (50 total). Output insertion is blocked, furnace fuel is checked on insertion and upgrade items are restricted to the upgrade slot.
+- New `FarmerScreen` draws the original unmodified background, fitted energy/stage/progress text and the upstream two-pixel growth-stage texture indicator. Longer text is scaled to stay in available bounds. Stage information is available on the indicator tooltip.
+- Register Farmer menu and screen; server-side block interaction now opens the Farmer menu. The existing `FarmerBlockEntity` provides the screen's read-only status and implements `MenuProvider`. Stored/capacity energy are split into two 16-bit fields each to preserve values such as **80,000 FE** across vanilla's short-based menu synchronization. No harvest recipe, crop-growing processor, random roll, power consumption or save-data algorithm was modified.
+- Added one `FarmerGameTests.farmerMenuLayoutAndSync` test for upstream slot coordinates, slot-count parity, 80,000 FE, valid/invalid fuel placement, output insertion safety and shift-click output retrieval.
+
+Real-client QA: An actual Minecraft 1.20.1 Forge client joined disposable `Nex Disposable QA` (Xvfb/Mesa). The Farmer block entity was explicitly reset with air and replaced, then the block was right-clicked. The original 176x194 GUI opened successfully, showing 0/80,000 FE, progress 0/800, empty seed/soil/crux/fuel/output slots, upgrade slot and player inventory. After preparing wheat seeds, farmland and coal in the test player's hotbar, real mouse clicks inserted seeds and farmland into their respective Farmer inputs. Coal was inserted into the fuel slot, consumed for energy as designed, and the display updated its FE reserve and showed seven configured growth stages. Screenshots show an empty GUI, seed/soil inserted, fuel accepted, and the active energy reading. This is **GUI and menu verification**, not proof of a completed harvest cycle.
+
+Regression evidence: Fresh Forge Gradle build succeeded, static foundation check passed, and an actual Minecraft GameTestServer run reported **all 36 required tests passed** (the earlier baseline was 35). The new test initially failed due to *test setup* using energy input larger than the port's 1,000 FE receive limit; the test was corrected to supply 80 permitted 1,000-FE increments. No machine defect was established by that failure. Both interrupted and completed client QA attempts were run only in the disposable world; the successful fast run restored original `tutorialStep:movement`. Upstream and ported Farmer GUI PNG files are byte-identical. Evidence: `qa-evidence/issue-010/` holds four full-resolution unmodified client screenshots, a four-state comparison and `verification.txt`.
+
+Limits: Real-client output pickup, shift-click routing for every recipe type, JEI, all GUI scales, external automation, multiplayer, upgrade tooltip details and actual completed farming/harvest are separate tests. Menu input slots currently permit manual seed/soil/crux placement; detailed recipe-dependent quick-move routing is not fully proven. The unfinished development JAR **must not be installed in Steph's existing world**.
+
+Status: **accepted by project owner** after reviewing the real Minecraft GUI screenshots; final GitHub main and Google Drive backups verified separately.
+
+---
+
 ## Issue 009: Crafter full crafting workflow through real GUI (18 October 2026) - ACCEPTED
 
 Objective: Verify that a player can configure a real 2x2 oak-plank ghost recipe, supply **four real oak planks** and **one coal fuel item**, let the Crafter process them, and collect **exactly one crafting table** through the actual Forge 1.20.1 graphical client. This is a disposable Survival-mode singleplayer QA session, not a creative-mode crafting shortcut.

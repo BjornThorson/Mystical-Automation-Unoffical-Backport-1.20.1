@@ -3,6 +3,7 @@ package com.blakebr0.mysticalautomation.init;
 import com.blakebr0.mysticalautomation.MysticalAutomation;
 import com.blakebr0.mysticalautomation.container.InfuserMenu;
 import com.blakebr0.mysticalautomation.container.CrafterMenu;
+import com.blakebr0.mysticalautomation.container.FarmerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -17,6 +18,8 @@ public final class ModMenuTypes {
             REGISTRY.register("infuser", () -> IForgeMenuType.create(InfuserMenu::new));
     public static final RegistryObject<MenuType<CrafterMenu>> CRAFTER =
             REGISTRY.register("crafter", () -> IForgeMenuType.create(CrafterMenu::new));
+    public static final RegistryObject<MenuType<FarmerMenu>> FARMER =
+            REGISTRY.register("farmer", () -> IForgeMenuType.create(FarmerMenu::new));
     public static void register(IEventBus bus) { REGISTRY.register(bus); }
     private ModMenuTypes() {}
 }

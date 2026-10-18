@@ -99,6 +99,11 @@ public class MachineShellBlock extends BaseEntityBlock {
                 NetworkHooks.openScreen(serverPlayer, crafter, pos);
             return InteractionResult.CONSUME;
         }
+        if (level.getBlockEntity(pos) instanceof FarmerBlockEntity farmer) {
+            if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer)
+                NetworkHooks.openScreen(serverPlayer, farmer, pos);
+            return InteractionResult.CONSUME;
+        }
         if (!(level.getBlockEntity(pos) instanceof InfuserBlockEntity infuser)) return InteractionResult.PASS;
         if (player.isShiftKeyDown() && player.getItemInHand(hand).isEmpty()) {
             infuser.advanceTarget();

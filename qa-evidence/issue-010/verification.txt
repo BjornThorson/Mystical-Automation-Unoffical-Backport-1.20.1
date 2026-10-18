@@ -1,0 +1,19 @@
+Issue 010 Farmer GUI backport evidence
+Status: technically verified and accepted by project owner after screenshot review; archived in the approved Issue 010 checkpoint.
+Date: 2026-10-18; Minecraft 1.20.1 Forge 47.4.24 in disposable Survival-mode Xvfb/Mesa client.
+Original upstream Farmer texture is unchanged: 176x194 visible panel, atlas 256x256.
+Machine slots: upgrade (152,9), seeds (60,30), soil (60,52), crux (60,74), fuel (30,56), outputs (116+18col,34+18row); 14 GUI positions + 36 player slots.
+Server right click opens FarmerMenu / FarmerScreen. Data synchronizes FE low/high, capacity low/high, fuel, 0/800 progress, stage count and stage progress.
+Empty GUI client screenshot: FE 0/80000; slots and icons in correct positions.
+Populated GUI: wheat seeds, farmland inserted with actual mouse; coal accepted into fuel slot; stage display shows 7 and energy rises.
+This is GUI wiring/visual interaction only, not a completed harvest proof.
+GameTest: new FarmerGameTests.farmerMenuLayoutAndSync; 36 total required tests passed.
+Test initially assumed unlimited FE transfer; corrected test to respect 1000 FE receive limit; processor unchanged.
+Build: BUILD SUCCESSFUL; static foundation: PASS.
+UI testing carried out in ignored run directory, original tutorialStep:movement restored.
+Evidence SHA256:
+ farmer-after-ticks.jpg 48152 bytes 1f56e6c8aed33a0312ef55c3eb8500a278dcdcf28780a466467d5c6116105243
+ farmer-empty-gui.jpg 48342 bytes 62aa155801be4462686b147cc96fd5500e5f088f41f1032cfbf2adfdc7729727
+ farmer-four-stage-comparison.jpg 56649 bytes 1688dad2c65b69c86b48f74f751d63ddace7cff30a4e94230b8cd6b3aa01f71d
+ farmer-fuel-loaded.jpg 48177 bytes c80bd8c3b492122ba4b599f38f9419159b3968a48bce92fb1edfc03578089147
+ farmer-seeds-soil.jpg 48555 bytes 483589aea1ee1087dd5bc4fe13c6e4ff391700a30560fd4fca9c05bf63264f5b

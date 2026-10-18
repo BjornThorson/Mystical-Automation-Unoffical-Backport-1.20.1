@@ -3,6 +3,7 @@ package com.blakebr0.mysticalautomation.client;
 import com.blakebr0.mysticalautomation.init.ModMenuTypes;
 import com.blakebr0.mysticalautomation.client.screen.InfuserScreen;
 import com.blakebr0.mysticalautomation.client.screen.CrafterScreen;
+import com.blakebr0.mysticalautomation.client.screen.FarmerScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -16,6 +17,7 @@ public final class ClientRegistration {
         event.enqueueWork(() -> {
             MenuScreens.register(ModMenuTypes.INFUSER.get(), InfuserScreen::new);
             MenuScreens.register(ModMenuTypes.CRAFTER.get(), CrafterScreen::new);
+            MenuScreens.register(ModMenuTypes.FARMER.get(), FarmerScreen::new);
         });
     }
     private ClientRegistration() {}

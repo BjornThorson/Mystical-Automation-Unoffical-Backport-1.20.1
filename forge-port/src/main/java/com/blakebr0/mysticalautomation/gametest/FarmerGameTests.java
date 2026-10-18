@@ -34,6 +34,46 @@ public final class FarmerGameTests {
         for (int i = 0; i < 100; i++)
             farmer.getEnergy().receiveEnergy(3840, false);
     }
+    /** Farmer UI slots, upgrade data and the full 32-bit FE value are server-backed. */
+    @GameTest(template="empty", timeoutTicks=50)
+    public static void farmerMenuLayoutAndSync(GameTestHelper helper) {
+        FarmerBlockEntity machine = make(helper);
+        var player = helper.makeMockPlayer();
+        var menu = new com.blakebr0.mysticalautomation.container.FarmerMenu(
+                1, player.getInventory(), machine);
+        if (menu.slots.size() != 50 || menu.getMaximumEnergy() != 80_000
+                || menu.getOperationTicks() != 800 || menu.getStages() != 0
+                || menu.getSlot(0).x != 152 || menu.getSlot(1).x != 60
+                || menu.getSlot(4).x != 30 || menu.getSlot(5).x != 116
+                || menu.getSlot(14).x != 8) {
+            helper.fail("Farmer GUI original slot geometry or data mismatch");
+            return;
+        }
+        // FE receive is capped per call, just as with external input.
+        for (int i = 0; i < 80; i++)
+            machine.getEnergy().receiveEnergy(1000, false);
+        if (menu.getEnergy() != 80_000 || menu.getMaximumEnergy() != 80_000
+                || menu.getSlot(5).mayPlace(new ItemStack(Items.WHEAT))
+                || !menu.getSlot(4).mayPlace(new ItemStack(Items.COAL))
+                || menu.getSlot(4).mayPlace(new ItemStack(Items.DIRT))) {
+            helper.fail("Farmer FE/slots: energy=" + menu.getEnergy()
+                    + ", max=" + menu.getMaximumEnergy()
+                    + ", outputMayPlace=" + menu.getSlot(5).mayPlace(new ItemStack(Items.WHEAT))
+                    + ", coalMayPlace=" + menu.getSlot(4).mayPlace(new ItemStack(Items.COAL))
+                    + ", dirtMayPlace=" + menu.getSlot(4).mayPlace(new ItemStack(Items.DIRT)));
+            return;
+        }
+        machine.getInventory().setStackInSlot(4, new ItemStack(Items.WHEAT, 7));
+        menu.quickMoveStack(player, 5);
+        if (!machine.getInventory().getStackInSlot(4).isEmpty()
+                || !player.getInventory().getItem(8).is(Items.WHEAT)
+                || player.getInventory().getItem(8).getCount() != 7) {
+            helper.fail("Farmer GUI could not safely quick-move a harvest output");
+            return;
+        }
+        helper.succeed();
+    }
+
     @GameTest(template="empty", timeoutTicks=50)
     public static void upstreamFarmerRecipesRegistered(GameTestHelper helper) {
         var level = helper.getLevel();
