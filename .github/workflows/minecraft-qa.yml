@@ -1,6 +1,5 @@
-# Experimental Minecraft 1.20.1 Forge CI. Keep on review/ci-minecraft-qa.
-# First run is triggered by committing this file on that branch.
-# Do not merge into main until reviewed and explicitly approved.
+# EXPERIMENT ONLY. Do not merge into main without the owner's approval.
+# GitHub Actions is independent of the temporarily exhausted Vercel sandbox.
 name: Experimental Minecraft Forge QA
 
 on:
@@ -21,7 +20,7 @@ jobs:
         shell: bash
         working-directory: forge-port
     steps:
-      - name: Check out approved source plus isolated workflow
+      - name: Check out source from isolated review branch
         uses: actions/checkout@v4
 
       - name: Set up Java 17
@@ -33,6 +32,11 @@ jobs:
       - name: Cache Gradle dependencies
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Confirm exact development Forge version
+        run: |
+          grep -Fxq 'minecraft_version=1.20.1' gradle.properties
+          grep -Fxq 'forge_version=47.4.24' gradle.properties
+
       - name: Check static foundation
         run: python3 scripts/check_foundation.py
 
@@ -41,25 +45,24 @@ jobs:
           chmod +x gradlew
           ./gradlew build --no-daemon --console=plain --max-workers=2
 
-      - name: Run real Minecraft Forge GameTestServer
+      - name: Run real Forge GameTestServer
         run: |
           set -o pipefail
           timeout --signal=TERM 45m ./gradlew runGameTestServer \
             --no-daemon --console=plain --max-workers=2 \
             2>&1 | tee game-test-ci.log
-          # Detect partial/no test execution, not merely a zero Gradle exit code.
           grep -Fq 'All 36 required tests passed' game-test-ci.log
 
-      - name: Select one development JAR for the client smoke test
+      - name: Select exactly one development JAR
         run: |
           mkdir -p ../ci-dist
           find build/libs -maxdepth 1 -type f -name 'mysticalautomation-*.jar' \
             ! -name '*-sources.jar' ! -name '*-javadoc.jar' \
             -exec cp '{}' ../ci-dist/ \;
-          test "$(find ../ci-dist -maxdepth 1 -name '*.jar' | wc -l)" -eq 1
+          test "$(find ../ci-dist -maxdepth 1 -type f -name '*.jar' | wc -l)" -eq 1
           ls -lh ../ci-dist
 
-      - name: Pass the mod JAR to the next job
+      - name: Pass compiled JAR to launcher smoke test
         uses: actions/upload-artifact@v4
         with:
           name: experimental-mod-jar
@@ -67,7 +70,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-      - name: Preserve Forge build and GameTest diagnostics
+      - name: Preserve regression diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -80,7 +83,7 @@ jobs:
           retention-days: 7
 
   forge-client-smoke:
-    name: HeadlessMC Forge client smoke (experimental)
+    name: HeadlessMC launcher and disposable world
     needs: forge-regression
     runs-on: ubuntu-24.04
     timeout-minutes: 60
@@ -94,13 +97,13 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Retrieve the JAR built in the first job
+      - name: Retrieve JAR built in first job
         uses: actions/download-artifact@v4
         with:
           name: experimental-mod-jar
           path: ci-dist
 
-      - name: Stage mod and three exact Forge runtime dependencies
+      - name: Stage mod and three exact runtime dependencies
         shell: bash
         run: |
           set -euo pipefail
@@ -121,10 +124,11 @@ jobs:
           stage_maven_mod cucumber Cucumber "$(get_version cucumber_version)"
           stage_maven_mod mysticalagriculture MysticalAgriculture "$(get_version mysticalagriculture_version)"
           stage_maven_mod mysticalagradditions MysticalAgradditions "$(get_version mysticalagradditions_version)"
-          echo 'Staged testing-only mod jars:'
           ls -lh run/mods
 
-      - name: Launch a real Minecraft 1.20.1 Forge client
+      - name: Start Minecraft client and create a disposable singleplayer world
+        # This action selects the latest compatible Forge patch for 1.20.1.
+        # Exact Forge 47.4.24 is verified separately by forge-visual-qa below.
         uses: headlesshq/mc-runtime-test@5.0.0
         with:
           mc: '1.20.1'
@@ -136,7 +140,26 @@ jobs:
           dummy-assets: 'false'
           cache-mc: github
 
-      - name: Preserve HeadlessMC and Minecraft client diagnostics
+      - name: Require disposable world save from the real client
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ ! -s 'run/saves/New World/level.dat' ]; then
+            echo 'Expected HeadlessMC disposable world not found; inspect run/saves:' >&2
+            find run/saves -maxdepth 3 -type f 2>/dev/null | head -n 40 || true
+            exit 1
+          fi
+          echo 'Disposable client world successfully created.'
+
+      - name: Pass disposable world to exact-Forge visual test
+        uses: actions/upload-artifact@v4
+        with:
+          name: disposable-minecraft-world
+          path: run/saves/New World/
+          if-no-files-found: error
+          retention-days: 3
+
+      - name: Preserve launcher diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -145,5 +168,144 @@ jobs:
             run/logs/*.log
             run/crash-reports/*
             HeadlessMC/config.properties
+          if-no-files-found: warn
+          retention-days: 7
+
+  forge-visual-qa:
+    name: Exact Forge 47.4.24 Farmer GUI screenshots (experimental)
+    needs: [forge-regression, forge-client-smoke]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - name: Check out approved Minecraft source plus experimental workflow
+        uses: actions/checkout@v4
+
+      - name: Java 17 for exact ForgeGradle client
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Cache Gradle dependencies
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Restore disposable HeadlessMC world for dev client
+        uses: actions/download-artifact@v4
+        with:
+          name: disposable-minecraft-world
+          path: forge-port/run/saves/New World
+
+      - name: Install virtual display, input and image capture tools
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            xvfb xdotool imagemagick
+
+      - name: Real Forge 47.4.24 right-click Farmer UI and capture screenshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fxq 'minecraft_version=1.20.1' forge-port/gradle.properties
+          grep -Fxq 'forge_version=47.4.24' forge-port/gradle.properties
+          test -s 'forge-port/run/saves/New World/level.dat'
+          mkdir -p ci-screenshots
+          export DISPLAY=:98
+          export LIBGL_ALWAYS_SOFTWARE=1
+          Xvfb :98 -screen 0 1280x720x24 +extension GLX -nolisten tcp \
+            >ci-screenshots/xvfb.log 2>&1 &
+          xvfb_pid=$!
+          gradle_pid=''
+          cleanup() {
+            if [ -n "$gradle_pid" ]; then kill "$gradle_pid" 2>/dev/null || true; fi
+            kill "$xvfb_pid" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+          sleep 2
+          kill -0 "$xvfb_pid"
+          # Keep all temporary options confined to the disposable Actions runner.
+          printf 'tutorialStep:none\npauseOnLostFocus:false\n' > forge-port/run/options.txt
+          (
+            cd forge-port
+            chmod +x gradlew
+            ./gradlew runClient '-PqaQuickPlayWorld=New World' \
+              --no-daemon --console=plain --max-workers=2
+          ) > ci-screenshots/gradle-client.log 2>&1 &
+          gradle_pid=$!
+
+          # Wait for the single-player world, not merely a window or the title screen.
+          ready=0
+          for i in $(seq 1 360); do
+            sleep 1
+            if ! kill -0 "$gradle_pid" 2>/dev/null; then
+              echo 'Forge client terminated before reaching the disposable world.' >&2
+              exit 1
+            fi
+            if [ -f forge-port/run/logs/latest.log ] && \
+               grep -Eq 'joined the game|joined with entity id' forge-port/run/logs/latest.log; then
+              ready=1
+              break
+            fi
+          done
+          test "$ready" = 1 || { echo 'Timed out waiting for an in-world client.' >&2; exit 1; }
+          echo "Joined disposable world after approximately $i seconds"
+          # The installed Forge version must be checked from Minecraft's runtime log.
+          grep -Fq 'Forge mod loading, version 47.4.24' forge-port/run/logs/latest.log || {
+            echo 'Minecraft did not confirm Forge 47.4.24' >&2
+            exit 1
+          }
+          sleep 3
+          wid=$(xdotool search --onlyvisible --name 'Minecraft' | tail -1)
+          test -n "$wid"
+          xdotool windowfocus --sync "$wid" || true
+          shot() {
+            xdotool mousemove --sync 900 350
+            sleep 1
+            import -display "$DISPLAY" -window root "ci-screenshots/$1.png"
+            identify "ci-screenshots/$1.png"
+          }
+          chat() {
+            xdotool key --clearmodifiers t
+            sleep 1.2
+            xdotool type --clearmodifiers --delay 50 "$1"
+            sleep 0.5
+            xdotool key --clearmodifiers Return
+            sleep 1.3
+          }
+          shot '01-world-initial'
+          # This disposable world is expected to allow commands from its CI test mod.
+          # If it does not, this visual job must FAIL; do not report a GUI pass.
+          chat '/gamemode creative'
+          chat '/tp @s 0 142 0 0 0'
+          chat '/fill -2 140 -2 2 140 5 minecraft:stone'
+          chat '/execute at @s run setblock ~ ~1 ~3 minecraft:air'
+          chat '/execute at @s run setblock ~ ~1 ~3 mysticalautomation:farmer'
+          xdotool mousemove --sync 640 360
+          sleep 0.8
+          shot '02-farmer-placed'
+          xdotool click 3
+          sleep 3
+          shot '03-farmer-screen'
+          # A screenshot is not a gameplay assertion; visual inspection remains mandatory.
+          test -s ci-screenshots/01-world-initial.png
+          test -s ci-screenshots/02-farmer-placed.png
+          test -s ci-screenshots/03-farmer-screen.png
+          # Require evidence of the block-placement command succeeding in the real client.
+          if grep -Eiq 'Unknown or incomplete command|You do not have permission|Unknown command' \
+              forge-port/run/logs/latest.log; then
+            echo 'Client reported unavailable or unauthorized commands.' >&2
+            exit 1
+          fi
+          echo 'Three real Xvfb Minecraft screenshots captured; manual GUI review required.'
+
+      - name: Upload visual evidence and client diagnostics, including on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: exact-forge-farmer-visual-evidence
+          path: |
+            ci-screenshots/*
+            forge-port/run/logs/*.log
+            forge-port/run/crash-reports/*
           if-no-files-found: warn
           retention-days: 7
