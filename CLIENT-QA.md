@@ -1,3 +1,19 @@
+## Issue 006: Crafter graphical GUI inspection (18 October 2026) - ACCEPTED
+
+Objective: Open the existing Forge 1.20.1 Crafter menu in a real Minecraft client and visually inspect the original background, nine-slot ghost recipe blueprint, independent nine-slot material storage, output, fuel and machine-upgrade slots, labels, energy reading, and player inventory. This is a **visual-opening issue only**. Blueprint mouse interactions and recipe execution in the client are separate issues.
+
+Verified in disposable `Nex Disposable QA` Survival-mode world with Xvfb/Mesa software rendering: the client joined the integrated server, commands placed a real `mysticalautomation:crafter` block and oriented the player, and a simulated right-click opened the actual Crafter screen. The screen displayed the original 176x217 GUI panel, three-by-three blue ghost blueprint area, nine distinct material slots, fuel slot, output slot, upper-right upgrade slot, player inventory, and energy/progress text. The original and ported background PNG files are **byte-identical** (SHA-256 `a8c228040713acf3dc1b3131463ecadd50794d8e1903a258f341c1040ca67594`).
+
+**Defect discovered for a separate issue:** The long `Progress: 0/200` readout begins inside the ghost blueprint's lower-right area and extends across the processing region and beyond the right edge of the GUI. Visual evidence and `CrafterScreen.java` label placement (x=100, y=75 in the 176-pixel-wide panel) support this. The right-side tutorial toast in the first screenshot obscured the upper-right upgrade slot. A second run temporarily used `tutorialStep:none` in the *ignored disposable QA client's* `options.txt` to obtain a clean screenshot; the original `tutorialStep:movement` setting was restored after the run. No permanent QA setting change.
+
+**Reviewable screenshots:** Real-client full-screen capture `qa-evidence/issue-006/crafter-gui-clean.jpg`, a closer crop `crafter-gui-detail.jpg`, and the unaltered first capture `crafter-gui-tutorial-overlay.jpg`. A separate screenshot-only GitHub branch `review/issue-006-crafter-gui` exists for owner review; it must not be mistaken for the approved `main` backup.
+
+Audit and limits: No production mod code, tests, texture, recipes, or block/menu implementation changed. Static foundation verification passed. No fresh build or GameTestServer run was needed for this inspection-only milestone; the **35/35 GameTest result from accepted Issue 005 remains the most recent full regression checkpoint**, not a new test result for Issue 006. Forge client logs reported nonfatal missing audio/narrator libraries in the headless Linux environment, but no identified Crafter screen exception. The visual appearance of empty slots does not prove blueprint cursor safety, real ingredient transfers, JEI behaviour, crafting, multiplayer, or save/reload. The incomplete development JAR remains **unsafe for Steph's existing world**.
+
+Status: **accepted by project owner** as a visual inspection; the layout defect is reserved for separate Issue 007. Backup verified separately.
+
+---
+
 ## Issue 005: Real-client Infuser 512-item buffer interactions (18 October 2026) - ACCEPTED
 
 Scope: Graphical and server-backed inventory QA for the existing safe-preview / `ContainerData` architecture, using a *disposable* Minecraft Forge 1.20.1 Survival-mode world. No machine implementation, menu logic, network code, recipes, test source or resource assets were changed.

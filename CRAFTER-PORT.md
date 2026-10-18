@@ -1,5 +1,13 @@
 # Crafter: Forge 1.20.1 port checkpoint
 
+## Issue 006 real-client visual inspection (18 October 2026) - ACCEPTED
+
+The actual Forge graphical client successfully loaded the disposable QA world and opened the Crafter GUI with a right-click. The blue nine-slot ghost blueprint, nine real-material slots, furnace-fuel slot, output, upgrade slot, inventory, and FE/progress readings were visible. Original GUI texture is byte-for-byte identical to upstream. Found a concrete label defect: `Progress: 0/200` crosses the blueprint and process area and clips beyond the right edge. A second captured image without the Minecraft tutorial overlay independently shows the upgrade slot.
+
+Evidence: `qa-evidence/issue-006/crafter-gui-clean.jpg`, `crafter-gui-detail.jpg`, and `crafter-gui-tutorial-overlay.jpg`; available on GitHub's review-only branch. No Java/recipe/menu changes, no new GameTest run; most recent 35/35 full regression result remains Issue 005. Cursor interaction, crafting recipe workflow, multiplayer and compatibility still unverified. Owner accepted the inspection and authorized Issue 007 to correct the progress-label layout. Final backup verified separately.
+
+---
+
 Current result: 23/23 actual Minecraft Forge GameTests passed (14 Infuser tests + 9 Crafter tests). No client visual validation. Development JAR must NOT be installed in Steph's existing world.
 
 ## Source and port

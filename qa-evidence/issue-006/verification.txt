@@ -1,0 +1,15 @@
+Issue 006: Crafter real-client GUI inspection
+Status: technically verified and accepted by project owner; included in Issue 006 checkpoint
+Date: 2026-10-18 UTC
+Target: Forge 47.4.24 / Minecraft 1.20.1, Xvfb/Mesa disposable singleplayer
+Environment: tutorialStep was temporarily none for a clean image, restored to movement afterwards.
+World joined; mysticalautomation:crafter placed using a command; simulated right-click opened actual CrafterScreen.
+Screenshot visual evidence: 3x3 ghost blueprint, 9 material slots, fuel, output, upgrade, player inventory, energy label, progress label.
+Defect: Progress 0/200 readout overlays ghost grid and processing region; clipped beyond right GUI edge.
+Textures identical to upstream SHA-256 a8c228040713acf3dc1b3131463ecadd50794d8e1903a258f341c1040ca67594
+No production code changes, no new build or GameTestServer; prior approved Issue 005 35/35 result only.
+Headless narrator/flite and OpenAL sound errors observed, not attributable to Crafter rendering.
+Real-client screenshot file SHA-256 values:
+ crafter-gui-clean.jpg 47363 bytes sha256=517712eb7a9fbc8edb30ac3cf2ec561740f8441bf348c10ad17a5e1945321613
+ crafter-gui-detail.jpg 20667 bytes sha256=63922be3d2c9eed95bae08db9e6bc61b4922f9962732b877b1f91df587397427
+ crafter-gui-tutorial-overlay.jpg 55560 bytes sha256=0a9b12dee497e2df3486f9cb966d07d84c897c08e6d5ebdb67b4a791444de6aa
