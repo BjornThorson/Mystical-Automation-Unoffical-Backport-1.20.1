@@ -1,0 +1,235 @@
+{
+  "schema_version": 1,
+  "reference": {
+    "minecraft": "1.21.1",
+    "loader": "neoforge",
+    "java": 21,
+    "branch": "main",
+    "directory": "."
+  },
+  "target": {
+    "minecraft": "1.20.1",
+    "loader": "forge",
+    "java": 17,
+    "branch": "main",
+    "directory": "forge-port"
+  },
+  "cases": [
+    {
+      "id": "infuser.imperiumToSupremium",
+      "machine": "infuser",
+      "port_gametest_class": "InfuserGameTests",
+      "port_gametest_method": "imperiumToSupremium"
+    },
+    {
+      "id": "infuser.noEnergyNoCraft",
+      "machine": "infuser",
+      "port_gametest_class": "InfuserGameTests",
+      "port_gametest_method": "noEnergyNoCraft"
+    },
+    {
+      "id": "infuser.fullOutputBlocksProduction",
+      "machine": "infuser",
+      "port_gametest_class": "InfuserGameTests",
+      "port_gametest_method": "fullOutputBlocksProduction"
+    },
+    {
+      "id": "infuser.coalFuelPowersConversion",
+      "machine": "infuser",
+      "port_gametest_class": "InfuserGameTests",
+      "port_gametest_method": "coalFuelPowersConversion"
+    },
+    {
+      "id": "infuser.basicCrystalConsumesDurability",
+      "machine": "infuser",
+      "port_gametest_class": "InfuserGameTests",
+      "port_gametest_method": "basicCrystalConsumesDurability"
+    },
+    {
+      "id": "infuser.inventoryAndEnergySaveLoad",
+      "machine": "infuser",
+      "port_gametest_class": "InfuserGameTests",
+      "port_gametest_method": "inventoryAndEnergySaveLoad"
+    },
+    {
+      "id": "infuser.infuserRecipeRegistered",
+      "machine": "infuser",
+      "port_gametest_class": "InfuserGameTests",
+      "port_gametest_method": "infuserRecipeRegistered"
+    },
+    {
+      "id": "infuser.menuSelectionSyncData",
+      "machine": "infuser",
+      "port_gametest_class": "InfuserGameTests",
+      "port_gametest_method": "menuSelectionSyncData"
+    },
+    {
+      "id": "infuser.upgradeScalesSpeedPowerAndCapacity",
+      "machine": "infuser",
+      "port_gametest_class": "InfuserGameTests",
+      "port_gametest_method": "upgradeScalesSpeedPowerAndCapacity"
+    },
+    {
+      "id": "infuser.upgradeReplacementAndNbtPersistence",
+      "machine": "infuser",
+      "port_gametest_class": "InfuserGameTests",
+      "port_gametest_method": "upgradeReplacementAndNbtPersistence"
+    },
+    {
+      "id": "infuser.removingUpgradeClampsEnergy",
+      "machine": "infuser",
+      "port_gametest_class": "InfuserGameTests",
+      "port_gametest_method": "removingUpgradeClampsEnergy"
+    },
+    {
+      "id": "infuser.upgradedInfuserActuallyProcesses",
+      "machine": "infuser",
+      "port_gametest_class": "InfuserGameTests",
+      "port_gametest_method": "upgradedInfuserActuallyProcesses"
+    },
+    {
+      "id": "infuser.allSixUpgradeTiersMatchOriginal",
+      "machine": "infuser",
+      "port_gametest_class": "InfuserGameTests",
+      "port_gametest_method": "allSixUpgradeTiersMatchOriginal"
+    },
+    {
+      "id": "infuser.essenceInputAccepts512AndRejectsOverflow",
+      "machine": "infuser",
+      "port_gametest_class": "InfuserGameTests",
+      "port_gametest_method": "essenceInputAccepts512AndRejectsOverflow"
+    },
+    {
+      "id": "infuser.largeStackNetworkPreviewAndClicks",
+      "machine": "infuser",
+      "port_gametest_class": "InfuserGameTests",
+      "port_gametest_method": "largeStackNetworkPreviewAndClicks"
+    },
+    {
+      "id": "infuser.shiftClickLargeBufferIsConservative",
+      "machine": "infuser",
+      "port_gametest_class": "InfuserGameTests",
+      "port_gametest_method": "shiftClickLargeBufferIsConservative"
+    },
+    {
+      "id": "infuser.quickMoveEventAndUnsafeClicksDoNotLoseItems",
+      "machine": "infuser",
+      "port_gametest_class": "InfuserGameTests",
+      "port_gametest_method": "quickMoveEventAndUnsafeClicksDoNotLoseItems"
+    },
+    {
+      "id": "infuser.fullContainerPacketStaysNetworkSafe",
+      "machine": "infuser",
+      "port_gametest_class": "InfuserGameTests",
+      "port_gametest_method": "fullContainerPacketStaysNetworkSafe"
+    },
+    {
+      "id": "infuser.pipeCapabilityFillsAndEmptiesSafely",
+      "machine": "infuser",
+      "port_gametest_class": "InfuserGameTests",
+      "port_gametest_method": "pipeCapabilityFillsAndEmptiesSafely"
+    },
+    {
+      "id": "crafter.craftsVanillaTableFromPooledInputs",
+      "machine": "crafter",
+      "port_gametest_class": "CrafterGameTests",
+      "port_gametest_method": "craftsVanillaTableFromPooledInputs"
+    },
+    {
+      "id": "crafter.noIngredientsNoCraft",
+      "machine": "crafter",
+      "port_gametest_class": "CrafterGameTests",
+      "port_gametest_method": "noIngredientsNoCraft"
+    },
+    {
+      "id": "crafter.fullOutputPreservesInputs",
+      "machine": "crafter",
+      "port_gametest_class": "CrafterGameTests",
+      "port_gametest_method": "fullOutputPreservesInputs"
+    },
+    {
+      "id": "crafter.recipeBlueprintPersists",
+      "machine": "crafter",
+      "port_gametest_class": "CrafterGameTests",
+      "port_gametest_method": "recipeBlueprintPersists"
+    },
+    {
+      "id": "crafter.upgradeAcceleratesCraft",
+      "machine": "crafter",
+      "port_gametest_class": "CrafterGameTests",
+      "port_gametest_method": "upgradeAcceleratesCraft"
+    },
+    {
+      "id": "crafter.recipeRegistered",
+      "machine": "crafter",
+      "port_gametest_class": "CrafterGameTests",
+      "port_gametest_method": "recipeRegistered"
+    },
+    {
+      "id": "crafter.honeyBottleCraftReturnsGlassBottles",
+      "machine": "crafter",
+      "port_gametest_class": "CrafterGameTests",
+      "port_gametest_method": "honeyBottleCraftReturnsGlassBottles"
+    },
+    {
+      "id": "crafter.ghostMenuDoesNotConsumeTemplateItem",
+      "machine": "crafter",
+      "port_gametest_class": "CrafterGameTests",
+      "port_gametest_method": "ghostMenuDoesNotConsumeTemplateItem"
+    },
+    {
+      "id": "crafter.shiftClickInputsAndSyncedUpgrades",
+      "machine": "crafter",
+      "port_gametest_class": "CrafterGameTests",
+      "port_gametest_method": "shiftClickInputsAndSyncedUpgrades"
+    },
+    {
+      "id": "farmer.farmerMenuLayoutAndSync",
+      "machine": "farmer",
+      "port_gametest_class": "FarmerGameTests",
+      "port_gametest_method": "farmerMenuLayoutAndSync"
+    },
+    {
+      "id": "farmer.upstreamFarmerRecipesRegistered",
+      "machine": "farmer",
+      "port_gametest_class": "FarmerGameTests",
+      "port_gametest_method": "upstreamFarmerRecipesRegistered"
+    },
+    {
+      "id": "farmer.harvestingProducesEssenceWithoutConsumingInputs",
+      "machine": "farmer",
+      "port_gametest_class": "FarmerGameTests",
+      "port_gametest_method": "harvestingProducesEssenceWithoutConsumingInputs"
+    },
+    {
+      "id": "farmer.unpoweredFarmerNeverHarvests",
+      "machine": "farmer",
+      "port_gametest_class": "FarmerGameTests",
+      "port_gametest_method": "unpoweredFarmerNeverHarvests"
+    },
+    {
+      "id": "farmer.fullOutputNeverDeletesHarvest",
+      "machine": "farmer",
+      "port_gametest_class": "FarmerGameTests",
+      "port_gametest_method": "fullOutputNeverDeletesHarvest"
+    },
+    {
+      "id": "farmer.growthAndUpgradeSurviveNbt",
+      "machine": "farmer",
+      "port_gametest_class": "FarmerGameTests",
+      "port_gametest_method": "growthAndUpgradeSurviveNbt"
+    },
+    {
+      "id": "farmer.allSeventeenFarmerRecipesLoaded",
+      "machine": "farmer",
+      "port_gametest_class": "FarmerGameTests",
+      "port_gametest_method": "allSeventeenFarmerRecipesLoaded"
+    },
+    {
+      "id": "farmer.farmerItemCraftRecipeRegistered",
+      "machine": "farmer",
+      "port_gametest_class": "FarmerGameTests",
+      "port_gametest_method": "farmerItemCraftRecipeRegistered"
+    }
+  ]
+}

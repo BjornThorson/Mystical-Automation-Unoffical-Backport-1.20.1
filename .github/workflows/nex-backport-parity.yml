@@ -1,0 +1,56 @@
+name: Minecraft reference / existing backport parity
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'qa/backport/**'
+      - 'forge-port/src/main/java/**/gametest/**'
+      - '.github/workflows/nex-backport-parity.yml'
+  push:
+    branches: [testing]
+    paths:
+      - 'qa/backport/**'
+      - 'forge-port/src/main/java/**/gametest/**'
+      - '.github/workflows/nex-backport-parity.yml'
+  workflow_dispatch:
+    inputs:
+      require_parity:
+        description: Require actual source and port runtime observation captures
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  parity-catalogue:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Confirm both implementations exist on main
+        run: |
+          grep -Fxq 'minecraft_version=1.21.1' gradle.properties
+          grep -Fxq 'minecraft_version=1.20.1' forge-port/gradle.properties
+          grep -Fxq 'forge_version=47.4.24' forge-port/gradle.properties
+          grep -q 'net.neoforged.moddev' build.gradle
+          grep -q 'net.minecraftforge.gradle' forge-port/build.gradle
+      - name: Match parity catalogue to the actual 36 Forge GameTests
+        run: python3 qa/backport/check_coverage.py
+      - name: Run parity comparator's regression tests
+        run: python3 -m unittest discover -s qa/backport -p 'test_*.py' -v
+      - name: Compare REAL measured reference and port evidence, if available
+        env:
+          STRICT: ${{ inputs.require_parity && 'true' || 'false' }}
+        run: |
+          if [ "$STRICT" = true ]; then
+            python3 qa/backport/compare.py --strict
+          else
+            python3 qa/backport/compare.py
+          fi
+      - name: Describe remaining parity evidence
+        if: always()
+        run: |
+          echo '### Minecraft reference / backport parity' >> "$GITHUB_STEP_SUMMARY"
+          echo 'GameTest catalogue maps the **existing** 36 Forge 1.20.1 tests.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Forge GameTests run in the separate **Minecraft source and real Forge backport CI** workflow.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'A green catalogue check does **not** certify 1.21.1 vs 1.20.1 behaviour until both real evidence snapshots exist.' >> "$GITHUB_STEP_SUMMARY"

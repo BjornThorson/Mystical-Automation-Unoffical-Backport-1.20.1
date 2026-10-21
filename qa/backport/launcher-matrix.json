@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "note": "Planned runtime profiles, not successful tests; pin actual launcher/loader versions when tested. No client credentials in CI.",
+  "profiles": [
+    {"id":"ref-prism-win","side":"reference","minecraft":"1.21.1","loader":"NeoForge 21.1.18","launcher":"Prism Launcher","launcher_version":null,"os":"Windows","status":"not_tested"},
+    {"id":"ref-curseforge-win","side":"reference","minecraft":"1.21.1","loader":"NeoForge 21.1.18","launcher":"CurseForge app","launcher_version":null,"os":"Windows","status":"not_tested"},
+    {"id":"target-prism-win","side":"target","minecraft":"1.20.1","loader":"Forge 47.x (pin on port)","launcher":"Prism Launcher","launcher_version":null,"os":"Windows","status":"not_tested"},
+    {"id":"target-prism-linux","side":"target","minecraft":"1.20.1","loader":"Forge 47.x (pin on port)","launcher":"Prism Launcher","launcher_version":null,"os":"Linux","status":"not_tested"},
+    {"id":"target-curseforge-win","side":"target","minecraft":"1.20.1","loader":"Forge 47.x (pin on port)","launcher":"CurseForge app","launcher_version":null,"os":"Windows","status":"not_tested"},
+    {"id":"target-atlauncher-win","side":"target","minecraft":"1.20.1","loader":"Forge 47.x (pin on port)","launcher":"ATLauncher","launcher_version":null,"os":"Windows","status":"not_tested"}
+  ]
+}
