@@ -1,0 +1,110 @@
+name: Minecraft source and real Forge backport CI
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [testing]
+    paths:
+      - 'forge-port/**'
+      - 'src/**'
+      - 'build.gradle'
+      - 'gradle.properties'
+      - 'qa/backport/**'
+      - '.github/workflows/nex-minecraft-mod-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  forge-build:
+    name: Forge 1.20.1 / Java 17 / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-latest]
+    defaults:
+      run:
+        shell: bash
+        working-directory: forge-port
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Confirm actual backport, not original NeoForge project
+        run: |
+          grep -Fxq 'minecraft_version=1.20.1' gradle.properties
+          grep -Fxq 'forge_version=47.4.24' gradle.properties
+          grep -q 'net.minecraftforge.gradle' build.gradle
+      - name: Verify backport static foundation
+        run: python3 scripts/check_foundation.py
+      - name: Compile actual Forge 1.20.1 mod
+        run: |
+          chmod +x gradlew
+          ./gradlew build --no-daemon --console=plain --max-workers=2
+      - name: Run 36 established Forge GameTests
+        if: matrix.os == 'ubuntu-24.04'
+        run: |
+          set -o pipefail
+          timeout --signal=TERM 45m ./gradlew runGameTestServer \
+            --no-daemon --console=plain --max-workers=2 2>&1 | tee game-test-ci.log
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          log=Path('game-test-ci.log').read_text(errors='replace')
+          counts=[int(x) for x in re.findall(r'All (\d+) required tests passed',log)]
+          if not counts or max(counts)<36:
+              raise SystemExit('Expected at least 36 successful REAL Forge GameTests, see captured log')
+          print(f'Actual Forge GameTestServer: {max(counts)} required tests passed')
+          PY
+      - name: Upload actual mod JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: forge-1201-development-jar-${{ matrix.os }}
+          path: forge-port/build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 14
+      - name: Save GameTest logs and diagnostics
+        if: always() && matrix.os == 'ubuntu-24.04'
+        uses: actions/upload-artifact@v4
+        with:
+          name: forge-1201-gametest-logs
+          path: |
+            forge-port/game-test-ci.log
+            forge-port/run/logs/*.log
+            forge-port/run/crash-reports/*
+          if-no-files-found: warn
+          retention-days: 7
+
+  original-neoforge:
+    name: Original Minecraft 1.21.1 NeoForge / Java 21
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Verify original root project
+        run: |
+          grep -Fxq 'minecraft_version=1.21.1' gradle.properties
+          grep -q 'net.neoforged.moddev' build.gradle
+      - name: Compile original reference sources
+        run: |
+          chmod +x gradlew
+          ./gradlew build --no-daemon --console=plain --max-workers=2
+      - name: Record evidence limits
+        run: |
+          echo 'Original 1.21.1 build checks compilation only.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Comparative runtime behaviour requires matching measured GameTest observations on both versions.' >> "$GITHUB_STEP_SUMMARY"
